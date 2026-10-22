@@ -15,20 +15,20 @@ function genericizeJSONPath(path = "") {
 }
 
 function getInstanceType(instance = {}) {
-  let [isModel, errors] = v.testModel(instance);
   if (!instance || Object.keys(instance).length === 0) {
     return "";
-  } else if (isModel) {
-    return t.ElectroInstanceTypes.model;
-  } else if (instance._instance === t.ElectroInstance.entity) {
+  }
+  // Built instances carry their type; checking one against the model schema
+  // first cost a full (failing) JSON schema validation per entity.
+  if (instance._instance === t.ElectroInstance.entity) {
     return t.ElectroInstanceTypes.entity;
   } else if (instance._instance === t.ElectroInstance.service) {
     return t.ElectroInstanceTypes.service;
   } else if (instance._instance === t.ElectroInstance.electro) {
     return t.ElectroInstanceTypes.electro;
-  } else {
-    return "";
   }
+  let [isModel] = v.testModel(instance);
+  return isModel ? t.ElectroInstanceTypes.model : "";
 }
 
 function getModelVersion(model = {}) {
