@@ -57,7 +57,12 @@ class Entity {
       listeners: this.config.listeners,
     });
     this.eventManager.add(this.config.logger);
-    this._validateModel(model);
+    // Checking the model against its JSON schema dominates construction time
+    // (jsonschema resolves a URL for every nested attribute). Callers that
+    // build many fixed, already-tested models at startup can opt out.
+    if (this.config.validateModel !== false) {
+      this._validateModel(model);
+    }
     this.version = EntityVersions.v1;
     this.model = this._parseModel(model, this.config);
     /** start beta/v1 condition **/

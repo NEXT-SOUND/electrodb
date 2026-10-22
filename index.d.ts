@@ -5490,6 +5490,13 @@ export type EntityConfiguration = {
     version?: string;
   };
   ignoreOwnership?: boolean;
+  /**
+   * Set to false to skip checking the model against ElectroDB's JSON schema
+   * when the entity is constructed. Only for models already validated
+   * elsewhere (for example in tests); an invalid model then fails later and
+   * less clearly.
+   */
+  validateModel?: boolean;
 };
 
 export class Entity<
